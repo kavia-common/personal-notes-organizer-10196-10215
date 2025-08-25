@@ -1,47 +1,53 @@
-# Astro Starter Kit: Minimal
+# Notes Frontend (Astro)
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Modern, minimalistic notes UI built with Astro. Features:
+- Sidebar navigation
+- Notes list with search
+- Create, edit, delete, and view notes
+- Floating action button to add notes
+- Light theme using primary #1976d2, accent #ffc107, secondary #424242
+- API service with backend integration or localStorage stub
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/minimal)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/minimal)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/minimal/devcontainer.json)
+## Quick start
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+1) Install
+- npm install
 
-## 🚀 Project Structure
+2) Configure env (optional)
+- Copy `.env.example` to `.env` and set:
+  - VITE_API_BASE_URL=http://localhost:8000
+  - VITE_API_KEY= (optional)
 
-Inside of your Astro project, you'll see the following folders and files:
+If VITE_API_BASE_URL is omitted, the app will use localStorage for CRUD.
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+3) Run
+- npm run dev
+- Open the printed URL (default http://localhost:3000)
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Structure
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+- src/layouts/Layout.astro: App shell with sidebar and FAB
+- src/components/: UI components (Header, NotesList, NoteForm, Sidebar)
+- src/pages/:
+  - index.astro: notes list and search
+  - new.astro: create note
+  - note/[id].astro: view note
+  - note/[id]/edit.astro: edit note
+- src/services/api.ts: PUBLIC_INTERFACE for CRUD using fetch; uses `.env` via Vite import.meta.env
 
-Any static assets, like images, can be placed in the `public/` directory.
+## Backend integration
 
-## 🧞 Commands
+Set VITE_API_BASE_URL to your backend base URL. Expected endpoints:
+- GET    /api/notes?q=search
+- GET    /api/notes/:id
+- POST   /api/notes
+- PUT    /api/notes/:id
+- DELETE /api/notes/:id
 
-All commands are run from the root of the project, from a terminal:
+Optional header: Authorization: Bearer ${VITE_API_KEY}
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+If backend is unavailable, the app falls back to localStorage seamlessly.
 
-## 👀 Want to learn more?
+## License
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+MIT

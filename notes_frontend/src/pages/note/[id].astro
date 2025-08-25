@@ -1,0 +1,32 @@
+---
+export async function getStaticPaths() {
+  // Build-time we don't know IDs; serve no prerendered paths.
+  return [];
+}
+import Layout from '../../layouts/Layout.astro';
+import { getNote } from '../../services/api';
+
+const { id } = Astro.params;
+const note = await getNote(id!);
+---
+<Layout>
+  {note ? (
+    <>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h2 style="margin:0;">{note.title || 'Untitled'}</h2>
+        <div style="display:flex;gap:8px;">
+          <a class="btn" href={`/note/${note.id}/edit`}>Edit</a>
+          <a class="btn" href="/">Back</a>
+        </div>
+      </div>
+      <div class="form-card">
+        <div style="color:var(--text-muted);font-size:.85rem;margin-bottom:8px;">
+          Updated {new Date(note.updatedAt).toLocaleString()}
+        </div>
+        <div style="white-space:pre-wrap; line-height:1.6;">{note.content || ''}</div>
+      </div>
+    </>
+  ) : (
+    <div class="empty">Note not found. <a href="/">Back to list</a></div>
+  )}
+</Layout>

@@ -1,0 +1,25 @@
+---
+const { placeholder = 'Search notes…' } = Astro.props;
+---
+<div class="header">
+  <div class="search">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M11 19a8 8 0 1 1 5.293-2.707L22 22l-1.414 1.414-5.707-5.707A7.963 7.963 0 0 1 11 19Zm0-2a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z" stroke="#6b7280"/></svg>
+    <input id="search-input" type="search" placeholder={placeholder} />
+  </div>
+  <div>
+    <a class="btn" href="/new">New</a>
+  </div>
+</div>
+
+<script>
+  // PUBLIC_INTERFACE
+  /** Dispatch a custom event up the tree when search changes */
+  const input = document.getElementById('search-input');
+  function emit() {
+    const detail = { query: input.value };
+    document.dispatchEvent(new CustomEvent('notes:search', { detail }));
+  }
+  if (input) {
+    input.addEventListener('input', emit);
+  }
+</script>

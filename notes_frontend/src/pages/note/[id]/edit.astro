@@ -1,0 +1,22 @@
+---
+export async function getStaticPaths() {
+  // No prerendered IDs at build time
+  return [];
+}
+import Layout from '../../../layouts/Layout.astro';
+import NoteForm from '../../../components/NoteForm.astro';
+import { getNote } from '../../../services/api';
+
+const { id } = Astro.params;
+const note = await getNote(id!);
+---
+<Layout>
+  {note ? (
+    <>
+      <h2 style="margin:0 0 12px;">Edit note</h2>
+      <NoteForm note={note} submitLabel="Update" />
+    </>
+  ) : (
+    <div class="empty">Note not found. <a href="/">Back to list</a></div>
+  )}
+</Layout>

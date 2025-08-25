@@ -1,0 +1,54 @@
+---
+import type { Note } from '../services/api';
+
+interface Props {
+  note?: Note | null;
+  submitLabel?: string;
+}
+
+const { note = null, submitLabel = 'Save' } = Astro.props as Props;
+const isEdit = Boolean(note && note.id);
+const noteId = note?.id || '';
+---
+<div class="form-card">
+  <form id="note-form" data-mode={isEdit ? 'edit' : 'create'} data-note-id={noteId}>
+    <div class="form-row">
+      <label for="title">Title</label>
+      <input id="title" name="title" type="text" value={note?.title || ''} placeholder="Note title" required />
+    </div>
+    <div class="form-row">
+      <label for="content">Content</label>
+      <textarea id="content" name="content" placeholder="Write your note here...">{note?.content || ''}</textarea>
+    </div>
+    <div class="form-actions">
+      <a class="btn" href="/">Cancel</a>
+      <button class="btn primary" type="submit">{submitLabel}</button>
+    </div>
+  </form>
+</div>
+
+<script>
+  import { createNote, updateNote } from '../services/api';
+
+  const form = document.getElementById('note-form');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form) return;
+    const fd = new FormData(form);
+    const data = { title: String(fd.get('title') || ''), content: String(fd.get('content') || '') };
+    const mode = form.getAttribute('data-mode');
+    try {
+      if (mode === 'edit') {
+        const id = form.getAttribute('data-note-id') || '';
+        await updateNote(id, data);
+        location.href = `/note/${id}`;
+      } else {
+        const n = await createNote(data);
+        location.href = `/note/${n.id}`;
+      }
+    } catch (err) {
+      const msg = err && err.message ? err.message : 'Failed to save note';
+      alert(msg);
+    }
+  });
+</script>

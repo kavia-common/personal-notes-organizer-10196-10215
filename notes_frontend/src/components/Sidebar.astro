@@ -1,0 +1,19 @@
+---
+const current = Astro.url.pathname;
+const links = [
+  { href: '/', label: 'All notes' },
+  { href: '/new', label: 'New note' },
+];
+---
+<aside class="sidebar">
+  <div class="brand">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 5a2 2 0 0 1 2-2h8l6 6v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5zm10 0H5v14h14V9h-6V5z"/></svg>
+    Notes
+  </div>
+  <nav class="nav">
+    <div class="nav-section">General</div>
+    {links.map(l => (
+      <a href={l.href} class={current === l.href ? 'active' : ''}>{l.label}</a>
+    ))}
+  </nav>
+</aside>
