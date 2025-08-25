@@ -1,0 +1,47 @@
+---
+import type { Note } from '../services/api';
+
+const { notes = [] as Note[] } = Astro.props;
+---
+<section class="note-list" id="note-list">
+  {notes.length === 0 ? (
+    <div class="empty">No notes yet. Click the + button to add one.</div>
+  ) : (
+    notes.map((n) => (
+      <article class="note-card" data-id={n.id}>
+        <h3><a href={`/note/${n.id}`}>{n.title || 'Untitled'}</a></h3>
+        <p>{(n.content || '').slice(0, 160)}</p>
+        <div class="note-meta">
+          <span>{new Date(n.updatedAt).toLocaleString()}</span>
+          <div class="note-actions">
+            <a class="btn" href={`/note/${n.id}`}>Open</a>
+            <a class="btn" href={`/note/${n.id}/edit`}>Edit</a>
+            <button class="btn warn" data-action="delete" data-id={n.id}>Delete</button>
+          </div>
+        </div>
+      </article>
+    ))
+  )}
+</section>
+
+<script>
+  import { deleteNote } from '../services/api';
+
+  // Handle delete actions client-side
+  function onClick(e) {
+    const t = e.target;
+    if (t && t.matches('button[data-action="delete"]')) {
+      const id = t.getAttribute('data-id');
+      if (!id) return;
+      if (confirm('Delete this note?')) {
+        deleteNote(id)
+          .then(() => {
+            const card = document.querySelector(`.note-card[data-id="${id}"]`);
+            if (card) card.remove();
+          })
+          .catch(err => alert(err.message || 'Failed to delete note'));
+      }
+    }
+  }
+  document.addEventListener('click', onClick);
+</script>

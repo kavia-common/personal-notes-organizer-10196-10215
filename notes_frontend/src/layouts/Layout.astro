@@ -1,0 +1,33 @@
+---
+import Sidebar from '../components/Sidebar.astro';
+import '../styles/theme.css';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Notes</title>
+  </head>
+  <body>
+    <div class="container">
+      <Sidebar />
+      <main class="main">
+        <slot />
+      </main>
+    </div>
+
+    <button class="fab" id="fab" aria-label="Add note">+</button>
+    <script>
+      // PUBLIC_INTERFACE
+      /** Floating action button navigates to new note page */
+      const fab = document.getElementById('fab');
+      fab?.addEventListener('click', () => {
+        location.href = '/new';
+      });
+    </script>
+  </body>
+</html>
